@@ -1,0 +1,16 @@
+cryptacular
+formencode
+imapIO
+pycrypto
+pyramid
+pyramid_beaker
+pyramid_mailer
+pyramid_tm
+SQLAlchemy
+recaptcha-client
+simplejson
+transaction
+WebError
+webtest
+whenIO
+zope.sqlalchemy
