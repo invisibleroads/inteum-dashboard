@@ -15,7 +15,7 @@
 	<%
 	path = request.path
 	linkPacks = [
-		('Home', '/'),
+		('Patents', request.route_path('patent_index')),
 		('Users', request.route_path('user_index')),
 	]
 	if USER_ID:

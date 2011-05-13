@@ -36,13 +36,13 @@ def index(request):
     return dict(users=db.query(User).order_by(User.when_login.desc()).all())
 
 
-@view_config(route_name='user_register', renderer='users/change.mak', request_method='GET', permission='__no_permission_required__')
+@view_config(route_name='user_register', renderer='users/change.mak', request_method='GET', permission='active')
 def register(request):
     'Show account registration page'
     return dict(user=None)
 
 
-@view_config(route_name='user_register', renderer='json', request_method='POST', permission='__no_permission_required__')
+@view_config(route_name='user_register', renderer='json', request_method='POST', permission='active')
 def register_(request):
     'Store proposed changes and send confirmation email'
     return save_user_(request, dict(request.params), 'registration')

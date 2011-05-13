@@ -3,6 +3,7 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import ALL_PERMISSIONS, Allow, Authenticated, Deny, authenticated_userid
 from pyramid.config import Configurator
+from pyramid.response import Response
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from sqlalchemy import engine_from_config
 from sqlalchemy.pool import QueuePool, NullPool
@@ -12,8 +13,14 @@ import os
 
 from tcd.libraries import tools
 from tcd.models import initialize_sql
-from tcd.views import users, pages
+from tcd.views import users, uploads, patents
 from tcd.parameters import *
+
+
+robots_txt = """\
+User-agent: *
+Disallow: /
+"""
 
 
 def main(global_config, **settings):
@@ -86,10 +93,13 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
     # Configure static assets
     config.add_static_view('static', 'tcd:static')
+    config.add_view(lambda request: Response(content_type='text/plain', body=robots_txt), name='robots.txt', permission='__no_permission_required__')
     # Configure routes for user account management
     config.include(users)
-    # Configure routes that demonstrate access control
-    config.include(pages)
+    # Configure routes for uploads
+    config.include(uploads)
+    # Configure routes for patents
+    config.include(patents)
     # Return WSGI app
     return config.make_wsgi_app()
 

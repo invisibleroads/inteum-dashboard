@@ -4,9 +4,9 @@ import unittest
 
 from tcd.views import users
 from tcd.libraries import sms
-from tcd.tests import settings
+from tcd.libraries.tools import get_token
 from tcd.models import db, User, User_, SMSAddress
-from tcd.tests import TestTemplate, ReplaceableDict, get_token
+from tcd.tests import TestTemplate, ReplaceableDict, settings
 
 
 class TestUsers(TestTemplate):

@@ -1,6 +1,7 @@
 'Data models'
+import datetime
 import transaction
-from sqlalchemy import func, Column, ForeignKey, Integer, String, LargeBinary, Unicode, Boolean, DateTime
+from sqlalchemy import func, Column, ForeignKey, Integer, String, LargeBinary, Unicode, Boolean, Date, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import column_property, scoped_session, sessionmaker, relationship, synonym
 from sqlalchemy.orm.properties import ColumnProperty
@@ -130,6 +131,48 @@ class SMSAddress(Base):
 
     def __str__(self):
         return "<SMSAddress(id=%s)>" % self.id
+
+
+class Upload(Base):
+    'An upload'
+    __tablename__ = 'uploads'
+    id = Column(Integer, primary_key=True)
+    ip = Column(String(IP_LEN_MAX))
+    when = Column(DateTime)
+
+
+class Patent(Base):
+    'A patent'
+    __tablename__ = 'patents'
+    id = Column(Integer, primary_key=True)
+    date_filed = Column(Date)
+    type_id = Column(ForeignKey('patent_types.id'))
+    type = relationship('PatentType')
+    status_id = Column(ForeignKey('patent_statuses.id'))
+    status = relationship('PatentStatus')
+
+    def __str__(self):
+        return "<Patent(id=%s)>" % self.id
+
+
+class PatentType(Base):
+    'A patent application type'
+    __tablename__ = 'patent_types'
+    id = Column(Integer, primary_key=True)
+    text = Column(Unicode(PATENT_TYPE_LEN_MAX))
+
+    def __str__(self):
+        return "<PatentType(id=%s)>" % self.id
+
+
+class PatentStatus(Base):
+    'A patent application status'
+    __tablename__ = 'patent_statuses'
+    id = Column(Integer, primary_key=True)
+    text = Column(Unicode(PATENT_STATUS_LEN_MAX))
+
+    def __str__(self):
+        return "<PatentStatus(id=%s)>" % self.id
 
 
 def initialize_sql(engine):

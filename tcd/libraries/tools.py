@@ -1,4 +1,5 @@
 'General purpose tools'
+import re
 import random
 from Crypto.Cipher import AES
 
@@ -36,3 +37,15 @@ def make_random_unique_string(length, is_unique):
             return randomID
     # Raise exception if we have no more permutations left
     raise RuntimeError('Could not create a unique string')
+
+
+def get_remote_ip(request):
+    'Return IP address of client'
+    return request.environ.get('HTTP_X_REAL_IP',
+           request.environ.get('HTTP_X_FORWARDED_FOR',
+           request.environ.get('REMOTE_ADDR')))
+
+
+def get_token(body):
+    match = re.search("token = '(.*)'", body)
+    return match.group(1) if match else ''

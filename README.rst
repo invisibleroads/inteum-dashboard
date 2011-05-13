@@ -35,6 +35,6 @@ tcd
     # Start production server
     paster serve --daemon production.ini
 
-    # Edit and install crontab.crt
-    vim deployment/crontab.crt
-    crontab deployment/crontab.crt
+    # Edit and install crontab
+    vim deployment/server.crt
+    crontab deployment/server.crt
