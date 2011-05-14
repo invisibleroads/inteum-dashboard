@@ -1,0 +1,1 @@
+- Think about whether to store fields in Unicode or String

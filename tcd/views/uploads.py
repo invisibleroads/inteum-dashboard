@@ -41,10 +41,10 @@ def upload(request):
         db.merge(PatentType(
             id=int(patentTypeID),
             text=text.decode('utf-8')))
-    for patentID, patentFilingDateInSecondsFromEpoch, patentTypeID, patentStatusID in patents:
+    for patentID, patentFilingDate, patentTypeID, patentStatusID in patents:
         db.merge(Patent(
             id=patentID,
-            date_filed=datetime.datetime.utcfromtimestamp(float(patentFilingDateInSecondsFromEpoch)).date(),
+            date_filed=datetime.datetime.strptime(patentFilingDate, '%Y%m%d').date(),
             type_id=int(patentTypeID),
             status_id=int(patentStatusID)))
     # Record

@@ -2,6 +2,7 @@
 import simplejson
 from urllib2 import urlopen
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from pyramid.url import route_url
 from pyramid.testing import DummyRequest
@@ -42,14 +43,50 @@ def run(settings):
 
 def assemble(sqlalchemyURL):
     'Assemble payload'
-    payload = {}
-    countByKey = {}
     # Load tables
     Base = declarative_base()
-    Base.metadata.reflect(create_engine(sqlalchemyURL))
+    engine = create_engine(sqlalchemyURL)
+    Base.metadata.reflect(engine)
     tables = Base.metadata.tables
-    # !!!
+    class Patent(Base):
+        __table__ = tables['PATENTS']
+    class PatentType(Base):
+        __table__ = tables['PAPPTYPE']
+    class PatentStatus(Base):
+        __table__ = tables['PATSTAT']
+    DBSession = sessionmaker(engine)
+    db = DBSession()
+    # Load patents
+    patents = []
+    for patent in db.query(Patent):
+        patents.append((
+            patent.PRIMARYKEY,
+            patent.FILEDATE.strftime('%Y%m%d'),
+            patent.PAPPTYPEFK,
+            patent.PATSTATFK))
+    # Load patentTypes
+    patentTypes = []
+    for patentType in db.query(PatentType):
+        patentTypes.append((
+            patentType.PRIMARYKEY, 
+            patentType.NAME.encode('utf-8'))
+    # Load patentStatuses
+    patentStatuses = []
+    for patentStatus in db.query(PatentStatus):
+        patentStatuses.append((
+            patentStatus.PRIMARYKEY, 
+            patentStatus.NAME.encode('utf-8')))
     # Return
+    payload = {
+        'patents': patents,
+        'patentTypes': patentTypes,
+        'patentStatuses': patentStatuses,
+    }
+    countByKey = {
+        'patents': len(patents),
+        'patentTypes': len(patentTypes),
+        'patentStatuses': len(patentStatuses),
+    }
     return payload, countByKey
 
 

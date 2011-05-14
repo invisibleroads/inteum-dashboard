@@ -141,10 +141,26 @@ class Upload(Base):
     when = Column(DateTime)
 
 
+class Technology(Base):
+    'A technology'
+    __tablename__ = 'technologies'
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(TECHNOLOGY_NAME_LEN_MAX))
+
+
+class Firm(base):
+    pass
+
+
 class Patent(Base):
     'A patent'
     __tablename__ = 'patents'
     id = Column(Integer, primary_key=True)
+    technology_id = Column(ForeignKey('technologies.id'))
+    name = Column(Unicode(PATENT_NAME_LEN_MAX))
+    firm_id = Column(ForeignKey('firms.id'))
+    firm = relationship('Firm')
+    firm_reference = Column(Unicode)
     date_filed = Column(Date)
     type_id = Column(ForeignKey('patent_types.id'))
     type = relationship('PatentType')
