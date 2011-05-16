@@ -27,26 +27,68 @@ def upload(request):
     except simplejson.JSONDecodeError:
         return dict(isOk=0, message='Could not load payload')
     try:
+        companies = payload['companies']
+        contacts = payload['contacts']
+        countries = payload['countries']
         patents = payload['patents']
-        patentTypes = payload['patentTypes']
+        patentInventors = payload['patentInventors']
         patentStatuses = payload['patentStatuses']
+        patentTypes = payload['patentTypes']
+        phones = payload['phones']
+        technologies = payload['technologies']
     except KeyError, error:
         return dict(isOk=0, message='Missing key (%s)' % error)
     # Save
-    for patentStatusID, text in patentStatuses:
+    for companyID, companyName in companies:
+        db.merge(Company(
+            id=int(companyID),
+            name=companyName.strip()))
+    for contactID, firstName, middleName, lastName, email in contacts:
+        db.merge(Contact(
+            id=int(contactID),
+            name_first=firstName.strip(),
+            name_middle=middleName.strip(),
+            name_last=lastName.strip(),
+            email=email.strip()))
+    for countryID, countryName in countries:
+        db.merge(Country(
+            id=int(countryID),
+            name=countryName.strip()))
+    for patentID, technologyID, patentName, patentLawFirmID, patentLawFirmCase, patentFilingDate, patentStatusID, patentTypeID, countryID in patents:
+        db.merge(Patent(
+            id=int(patentID),
+            technology_id=int(technologyID),
+            name=patentName.strip(),
+            firm_id=int(patentLawFirmID),
+            firm_ref=patentLawFirmCase.strip(),
+            date_filed=datetime.datetime.strptime(patentFilingDate, '%Y%m%d').date(),
+            status_id=int(patentStatusID),
+            type_id=int(patentTypeID),
+            country_id=int(countryID)))
+    for patentID, contactID, piOrder in patentInventors:
+        db.merge(PatentInventor(
+            patent_id=int(patentID),
+            contact_id=int(contactID),
+            pi_order=int(piOrder)))
+    for patentStatusID, patentStatusName in patentStatuses:
         db.merge(PatentStatus(
             id=int(patentStatusID),
-            text=text.decode('utf-8')))
-    for patentTypeID, text in patentTypeID:
+            name=patentStatusName.strip()))
+    for patentTypeID, patentTypeName in patentTypeID:
         db.merge(PatentType(
             id=int(patentTypeID),
-            text=text.decode('utf-8')))
-    for patentID, patentFilingDate, patentTypeID, patentStatusID in patents:
-        db.merge(Patent(
-            id=patentID,
-            date_filed=datetime.datetime.strptime(patentFilingDate, '%Y%m%d').date(),
-            type_id=int(patentTypeID),
-            status_id=int(patentStatusID)))
+            name=patentTypeName.strip()))
+    for phoneID, contactID, phoneNumber, phoneType in phones:
+        db.merge(
+            id=int(phoneID),
+            contact_id=int(contactID),
+            number=phoneNumber.strip(),
+            type=phoneType.strip())
+    for technologyID, technologyCase, technologyName in technologies:
+        db.merge(Technology(
+            id=int(technologyID),
+            ref=technologyCase.strip(),
+            name=technologyName.strip()))
     # Record
     db.add(Upload(
         ip=get_remote_ip(request),

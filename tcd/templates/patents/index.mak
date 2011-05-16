@@ -53,21 +53,33 @@ import whenIO
 <table id=patents>
 	<thead>
 		<tr>
+			<th>Case</th>
+			<th>Inventor</th>
+			<th>Name</th>
 			<th>Status</th>
             <th>Type</th>
 			<th>Filing Date</th>
+			<th>Firm</th>
+			<th>Firm Ref</th>
+			<th>Country</th>
 		</tr>
 	</thead>
 	<tbody>
 	% for patent in patents:
 		<tr id=patent${patent.id} class=patent>
-			<td>${patent.status}</td>
-			<td>${patent.type}</td>
+			<td>${patent.technology.ref if patent.technology else ''}</td>
+			<td>${sorted(patent.inventors, key=lambda x: x.pi_order)[0].name_last if patent.inventors else ''}</td>
+			<td>${patent.name}</td>
+			<td>${patent.status.name if patent.status else ''}</td>
+			<td>${patent.type.name if patent.type else ''}</td>
 			<td>
 				<span title="${patent.date_filed.strftime('%Y%m%d')}">
 					${patent.date_filed.strftime('%B %d, %Y')}
 				</span>
 			</td>
+			<td>${patent.firm.name}</td>
+			<td>${patent.firm_ref}</td>
+			<td>${patent.country.name}</td>
 		</tr>
 	% endfor
 	</tbody>

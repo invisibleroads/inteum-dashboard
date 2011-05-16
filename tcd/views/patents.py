@@ -14,5 +14,5 @@ def includeme(config):
 def index(request):
     'Display patent activity'
     when_uploaded = db.query(Upload).order_by(Upload.when.desc()).first()
-    patents = db.query(Patent).options(joinedload(Patent.type, Patent.status)).all()
+    patents = db.query(Patent).options(joinedload(Patent.technology, Patent.firm, Patent.status, Patent.type, Patent.inventors, Patent.country)).order_by(Patent.status.name, Patent.type.name, Patent.date_filed).all()
     return dict(when_uploaded=when_uploaded, patents=patents)
