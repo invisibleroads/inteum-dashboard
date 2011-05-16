@@ -22,17 +22,14 @@ td {text-align: center}
 </%def>
 
 <%def name='js()'>
-function computeTableWidth() {
-	return $(window).width() - 55;
-}
 function computeTableHeight() {
 	return $(window).height() - 110;
 }
 var table = $('#patents').dataTable({
 	'aaSorting': [
+		[2, 'asc'],
 		[3, 'asc'],
-		[4, 'asc'],
-		[5, 'asc']
+		[4, 'asc']
 	],
 	'aoColumns': [
 		{'sType': 'string'},
@@ -47,11 +44,9 @@ var table = $('#patents').dataTable({
 	],
 	'bPaginate': false,
 	'oLanguage': {'sSearch': 'Filter'},
-	'sScrollX': computeTableWidth(),
 	'sScrollY': computeTableHeight()
 });
 $(window).bind('resize', function() {
-	$('.dataTables_scroll').width(computeTableWidth());
 	$('.dataTables_scrollBody').height(computeTableHeight());
 	table.fnAdjustColumnSizing();
 });
