@@ -5,12 +5,10 @@
 <%def name='css()'>
 td {text-align: center}
 .flag {color: darkblue}
+#footer {position: fixed; bottom: 0; right: 0}
 </%def>
 
 <%def name='toolbar()'>
-% if when_uploaded:
-Last updated: ${whenIO.WhenIO(USER_OFFSET).format(upload.when)}
-% endif
 </%def>
 
 <%def name='root()'>
@@ -23,6 +21,9 @@ Last updated: ${whenIO.WhenIO(USER_OFFSET).format(upload.when)}
 </%def>
 
 <%def name='js()'>
+function computeTableWidth() {
+	return $(window).width();
+}
 function computeTableHeight() {
 	return $(window).height() - 100;
 }
@@ -45,10 +46,11 @@ var table = $('#patents').dataTable({
 	],
 	'bPaginate': false,
 	'oLanguage': {'sSearch': 'Filter'},
+	'sScrollX': computeTableWidth(),
 	'sScrollY': computeTableHeight()
 });
 $(window).bind('resize', function() {
-	$('.dataTables_scrollBody').height(computeTableHeight());
+	$('.dataTables_scrollBody').height(computeTableHeight()).width(computeTableWidth());
 	table.fnAdjustColumnSizing();
 });
 $('.dataTables_filter input').focus();
@@ -94,3 +96,9 @@ import whenIO
 	% endfor
 	</tbody>
 </table>
+
+<div id=footer>
+% if upload:
+Last updated: ${whenIO.WhenIO(USER_OFFSET).format(upload.when)}
+% endif
+</div>
