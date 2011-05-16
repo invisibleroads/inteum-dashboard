@@ -9,7 +9,7 @@ td {text-align: center}
 
 <%def name='toolbar()'>
 % if when_uploaded:
-Last updated: ${whenIO.WhenIO(USER_OFFSET).format(when_uploaded)}
+Last updated: ${whenIO.WhenIO(USER_OFFSET).format(upload.when)}
 % endif
 </%def>
 
