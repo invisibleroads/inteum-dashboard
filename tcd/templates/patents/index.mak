@@ -23,10 +23,10 @@ td {text-align: center}
 
 <%def name='js()'>
 function computeTableWidth() {
-	return $(window).width() - 125;
+	return $(window).width();
 }
 function computeTableHeight() {
-	return $(window).height() - 125;
+	return $(window).height() - 110;
 }
 var table = $('#patents').dataTable({
 	'aaSorting': [
@@ -47,11 +47,10 @@ var table = $('#patents').dataTable({
 	],
 	'bPaginate': false,
 	'oLanguage': {'sSearch': 'Filter'},
-	'sScrollX': computeTableWidth(),
 	'sScrollY': computeTableHeight()
 });
 $(window).bind('resize', function() {
-	$('.dataTables_scrollBody').height(computeTableHeight()).width(computeTableWidth());
+	$('.dataTables_scroll').height(computeTableHeight()).width(computeTableWidth());
 	table.fnAdjustColumnSizing();
 });
 $('.dataTables_filter input').focus();
