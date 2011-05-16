@@ -27,15 +27,20 @@ def run(settings):
                 return data.get('message')
         return data
     # Login
+    showFeedback('Logging in...')
     post('users/login', dict(username=appUsername, password=appPassword))
     # Get token
+    showFeedback('Getting token...')
     data = post('users', expectJSON=False)
     token = get_token(data)
     # Assemble
+    showFeedback('Assembling payload...')
     payload, countByKey = assemble(sqlalchemyURL)
     # Upload
+    showFeedback('Uploading...')
     post('uploads', dict(token=token, payload=simplejson.dumps(payload)))
     # Logout
+    showFeedback('Logging out...')
     post('users/logout')
     # Return
     return '\n'.join('%s: %s' % (key.capitalize(), count) for key, count in countByKey.iteritems())
@@ -43,6 +48,11 @@ def run(settings):
 
 def strip(text):
     return text.strip() if text else ''
+
+
+def showFeedback(text):
+    if 'options' not in dir() or options.verbose:
+        print text
 
 
 def assemble(sqlalchemyURL):
@@ -73,14 +83,14 @@ def assemble(sqlalchemyURL):
     DBSession = sessionmaker(engine)
     db = DBSession()
     # Load companies
-    print 'Loading companies...'
+    showFeedback('Loading companies...')
     companies = []
     for company in db.query(Company):
         companies.append((
             company.PRIMARYKEY,
             company.NAME))
     # Load contacts
-    print 'Loading contacts...'
+    showFeedback('Loading contacts...')
     contacts = []
     for contact in db.query(Contact):
         contacts.append((
@@ -91,7 +101,7 @@ def assemble(sqlalchemyURL):
             strip(contact.EMAIL),
         ))
     # Load countries
-    print 'Loading countries...'
+    showFeedback('Loading countries...')
     countries = []
     for country in db.query(Country):
         countries.append((
@@ -99,7 +109,7 @@ def assemble(sqlalchemyURL):
             strip(country.NAME),
         ))
     # Load patents
-    print 'Loading patents...'
+    showFeedback('Loading patents...')
     patents = []
     for patent in db.query(Patent):
         patents.append((
@@ -108,12 +118,12 @@ def assemble(sqlalchemyURL):
             strip(patent.NAME),
             int(patent.LAWFIRMFK),
             strip(patent.LEGALREFNO),
-            patent.FILEDATE.strftime('%Y%m%d') if patent.FIRSTNAME else '',
+            patent.FILEDATE.strftime('%Y%m%d') if patent.FILEDATE.year != 1899 else '',
             int(patent.PATSTATFK),
             int(patent.PAPPTYPEFK),
             int(patent.COUNTRYFK)))
     # Load patentInventors
-    print 'Loading patent inventors...'
+    showFeedback('Loading patent inventors...')
     patentInventors = []
     for patentInventor in db.query(PatentInventor):
         patentInventors.append((
@@ -121,7 +131,7 @@ def assemble(sqlalchemyURL):
             int(patentInventor.CONTACTSFK),
             int(patentInventor.PI_ORDER)))
     # Load patentStatuses
-    print 'Loading patent statuses...'
+    showFeedback('Loading patent statuses...')
     patentStatuses = []
     for patentStatus in db.query(PatentStatus):
         patentStatuses.append((
@@ -129,7 +139,7 @@ def assemble(sqlalchemyURL):
             strip(patentStatus.NAME),
         ))
     # Load patentTypes
-    print 'Loading patent types...'
+    showFeedback('Loading patent types...')
     patentTypes = []
     for patentType in db.query(PatentType):
         patentTypes.append((
@@ -137,7 +147,7 @@ def assemble(sqlalchemyURL):
             strip(patentType.NAME),
         ))
     # Load phones
-    print 'Loading phones...'
+    showFeedback('Loading phones...')
     phones = []
     for phone in db.query(Phone):
         phones.append((
@@ -147,7 +157,7 @@ def assemble(sqlalchemyURL):
             strip(phone.PHONETYPE),
         ))
     # Load technologies
-    print 'Loading technologies...'
+    showFeedback('Loading technologies...')
     technologies = []
     for technology in db.query(Technology):
         technologies.append((
