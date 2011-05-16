@@ -15,6 +15,9 @@ Last updated: ${whenIO.WhenIO(USER_OFFSET).format(upload.when)}
 
 <%def name='root()'>
 <link rel=stylesheet href="${request.static_url('tcd:static/dataTables/style.css')}">
+<style>
+.dataTables_filter {position: fixed; top: 0}
+</style>
 <script src="${request.static_url('tcd:static/dataTables/jquery.dataTables.min.js')}"></script>
 <script src="${request.static_url('tcd:static/dataTables/jquery.dataTables.titleString.min.js')}"></script>
 </%def>
