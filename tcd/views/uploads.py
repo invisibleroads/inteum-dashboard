@@ -42,53 +42,66 @@ def upload(request):
     for companyID, companyName in companies:
         db.merge(Company(
             id=int(companyID),
-            name=companyName.strip()))
+            name=companyName.strip(),
+        ))
     for contactID, firstName, middleName, lastName, email in contacts:
         db.merge(Contact(
             id=int(contactID),
             name_first=firstName.strip(),
             name_middle=middleName.strip(),
             name_last=lastName.strip(),
-            email=email.strip()))
+            email=email.strip(),
+        ))
     for countryID, countryName in countries:
         db.merge(Country(
             id=int(countryID),
-            name=countryName.strip()))
+            name=countryName.strip(),
+        ))
     for patentID, technologyID, patentName, patentLawFirmID, patentLawFirmCase, patentFilingDate, patentStatusID, patentTypeID, countryID in patents:
+        try:
+            patentFilingDate = datetime.datetime.strptime(patentFilingDate, '%Y%m%d').date()
+        except ValueError:
+            patentFilingDate = None
         db.merge(Patent(
             id=int(patentID),
             technology_id=int(technologyID),
             name=patentName.strip(),
             firm_id=int(patentLawFirmID),
             firm_ref=patentLawFirmCase.strip(),
-            date_filed=datetime.datetime.strptime(patentFilingDate, '%Y%m%d').date(),
+            date_filed=patentFilingDate,
             status_id=int(patentStatusID),
             type_id=int(patentTypeID),
-            country_id=int(countryID)))
+            country_id=int(countryID),
+        ))
     for patentID, contactID, piOrder in patentInventors:
         db.merge(PatentInventor(
             patent_id=int(patentID),
             contact_id=int(contactID),
-            pi_order=int(piOrder)))
+            pi_order=int(piOrder),
+        ))
     for patentStatusID, patentStatusName in patentStatuses:
         db.merge(PatentStatus(
             id=int(patentStatusID),
-            name=patentStatusName.strip()))
+            name=patentStatusName.strip(),
+        ))
     for patentTypeID, patentTypeName in patentTypeID:
         db.merge(PatentType(
             id=int(patentTypeID),
-            name=patentTypeName.strip()))
+            name=patentTypeName.strip(),
+        ))
     for phoneID, contactID, phoneNumber, phoneType in phones:
-        db.merge(
+        db.merge(Phone(
             id=int(phoneID),
             contact_id=int(contactID),
             number=phoneNumber.strip(),
-            type=phoneType.strip())
+            type=phoneType.strip(),
+        ))
     for technologyID, technologyCase, technologyName in technologies:
         db.merge(Technology(
             id=int(technologyID),
             ref=technologyCase.strip(),
-            name=technologyName.strip()))
+            name=technologyName.strip(),
+        ))
     # Record
     db.add(Upload(
         ip=get_remote_ip(request),

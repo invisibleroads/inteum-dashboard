@@ -5,10 +5,9 @@ from urllib import urlencode
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from pyramid.url import route_url
-from pyramid.testing import DummyRequest
 
 import script_process
+from tcd import main
 from tcd.libraries.tools import get_token
 
 
@@ -19,27 +18,31 @@ def run(settings):
     appURL = settings['tc.url']
     appUsername = settings['tc.username']
     appPassword = settings['tc.password']
-    def post(name, valueByKey=None, expectJSON=True):
-        url = route_url(name, DummyRequest(), _app_url=appURL)
-        data = urlopen(url, valueByKey).read()
+    def post(relativeURL, valueByKey=None, expectJSON=True):
+        url = appURL + '/' + relativeURL
+        data = urlopen(url, urlencode(valueByKey or {})).read()
         if expectJSON:
             data = simplejson.loads(data)
             if options.verbose and not data.get('isOk'):
                 return data.get('message')
         return data
     # Login
-    post('user_login', dict(username=appUsername, password=appPassword))
+    post('users/login', dict(username=appUsername, password=appPassword))
     # Get token
-    data = post('user_index', expectJSON=False)
+    data = post('users', expectJSON=False)
     token = get_token(data)
     # Assemble
     payload, countByKey = assemble(sqlalchemyURL)
     # Upload
-    post('upload', dict(token=token, payload=simplejson.dumps(payload)))
+    post('uploads', dict(token=token, payload=simplejson.dumps(payload)))
     # Logout
-    post('user_logout')
+    post('users/logout')
     # Return
     return '\n'.join('%s: %s' % (key.capitalize(), count) for key, count in countByKey.iteritems())
+
+
+def strip(text):
+    return text.strip() if text else ''
 
 
 def assemble(sqlalchemyURL):
@@ -58,7 +61,7 @@ def assemble(sqlalchemyURL):
     class Phone(Base):
         __table__ = tables['PHONES']
     class Technology(Base):
-        __table__ = tables['TECHNOLOGY']
+        __table__ = tables['TECHNOL']
     class Patent(Base):
         __table__ = tables['PATENTS']
     class PatentInventor(Base):
@@ -70,40 +73,47 @@ def assemble(sqlalchemyURL):
     DBSession = sessionmaker(engine)
     db = DBSession()
     # Load companies
+    print 'Loading companies...'
     companies = []
     for company in db.query(Company):
         companies.append((
             company.PRIMARYKEY,
             company.NAME))
     # Load contacts
+    print 'Loading contacts...'
     contacts = []
     for contact in db.query(Contact):
         contacts.append((
             int(contact.PRIMARYKEY),
-            contact.FIRSTNAME.strip(),
-            contact.MIDDLEINI.strip(),
-            contact.LASTNAME.strip(),
-            contact.EMAIL.strip()))
+            strip(contact.FIRSTNAME),
+            strip(contact.MIDDLEINI),
+            strip(contact.LASTNAME),
+            strip(contact.EMAIL),
+        ))
     # Load countries
+    print 'Loading countries...'
     countries = []
     for country in db.query(Country):
         countries.append((
             int(country.PRIMARYKEY),
-            country.NAME.strip()))
+            strip(country.NAME),
+        ))
     # Load patents
+    print 'Loading patents...'
     patents = []
     for patent in db.query(Patent):
         patents.append((
             int(patent.PRIMARYKEY),
             int(patent.TECHNOLFK),
-            patent.NAME.strip(),
+            strip(patent.NAME),
             int(patent.LAWFIRMFK),
-            patent.LEGALREFNO.strip(),
-            patent.FILEDATE.strftime('%Y%m%d'),
+            strip(patent.LEGALREFNO),
+            patent.FILEDATE.strftime('%Y%m%d') if patent.FIRSTNAME else '',
             int(patent.PATSTATFK),
-            int(patent.PAPPTYPEFK)
+            int(patent.PAPPTYPEFK),
             int(patent.COUNTRYFK)))
     # Load patentInventors
+    print 'Loading patent inventors...'
     patentInventors = []
     for patentInventor in db.query(PatentInventor):
         patentInventors.append((
@@ -111,32 +121,40 @@ def assemble(sqlalchemyURL):
             int(patentInventor.CONTACTSFK),
             int(patentInventor.PI_ORDER)))
     # Load patentStatuses
+    print 'Loading patent statuses...'
     patentStatuses = []
     for patentStatus in db.query(PatentStatus):
         patentStatuses.append((
             int(patentStatus.PRIMARYKEY),
-            patentStatus.NAME.strip()))
+            strip(patentStatus.NAME),
+        ))
     # Load patentTypes
+    print 'Loading patent types...'
     patentTypes = []
     for patentType in db.query(PatentType):
         patentTypes.append((
             int(patentType.PRIMARYKEY),
-            patentType.NAME.strip()))
+            strip(patentType.NAME),
+        ))
     # Load phones
+    print 'Loading phones...'
     phones = []
     for phone in db.query(Phone):
         phones.append((
             int(phone.PRIMARYKEY),
             int(phone.CONTACTSFK),
-            phone.PHONENUM.strip(),
-            phone.PHONETYPE.strip()))
+            strip(phone.PHONENUM),
+            strip(phone.PHONETYPE),
+        ))
     # Load technologies
+    print 'Loading technologies...'
     technologies = []
     for technology in db.query(Technology):
         technologies.append((
             int(technology.PRIMARYKEY),
-            technology.TECHID.strip(),
-            technology.NAME.strip()))
+            strip(technology.TECHID),
+            strip(technology.NAME),
+        ))
     # Return
     payload = {
         'companies': companies,
