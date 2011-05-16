@@ -25,8 +25,8 @@ function computeTableHeight() {
 }
 var table = $('#patents').dataTable({
 	'aaSorting': [
-		[3, 'asc']
-		[4, 'asc']
+		[3, 'asc'],
+		[4, 'asc'],
 		[5, 'asc']
 	],
 	'aoColumns': [
@@ -35,10 +35,10 @@ var table = $('#patents').dataTable({
         {'sType': 'string'},
         {'sType': 'string'},
         {'sType': 'string'},
-		{'sType': 'title-string'}
+		{'sType': 'title-string'},
         {'sType': 'string'},
         {'sType': 'string'},
-        {'sType': 'string'},
+        {'sType': 'string'}
 	],
 	'bInfo': false,
 	'bPaginate': false,
