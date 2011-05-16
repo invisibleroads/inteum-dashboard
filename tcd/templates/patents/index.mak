@@ -45,6 +45,7 @@ var table = $('#patents').dataTable({
 	],
 	'bPaginate': false,
 	'oLanguage': {'sSearch': 'Filter'},
+	'sScrollX': '100%',
 	'sScrollY': computeTableHeight()
 });
 $(window).bind('resize', function() {
@@ -75,8 +76,15 @@ import whenIO
 	<tbody>
 	% for patent in patents:
 		<tr id=patent${patent.id} class=patent>
-			<td>${patent.technology.ref if patent.technology else ''}</td>
-			<td>${sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact.name_last if patent.inventors else ''}</td>
+			<td title="${patent.technology.name}">${patent.technology.ref if patent.technology else ''}</td>
+		% if patent.inventors:
+			<%
+			contact = sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact
+			%>
+			<td title="${contact.email + ' '.join(contact.phones)}">${contact.name_last}</td>
+		% else:
+			<td></td>
+		% endif
 			<td>${patent.status.name if patent.status else ''}</td>
 			<td>${patent.type.name if patent.type else ''}</td>
 			<td>
