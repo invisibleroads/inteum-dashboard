@@ -1,6 +1,6 @@
 'Views for tracking patent activity'
 from pyramid.view import view_config
-from sqlalchemy.orm import joinedload_all
+from sqlalchemy.orm import joinedload, joinedload_all
 
 from tcd.models import db, Upload, Contact, Patent, PatentInventor, PatentStatus, PatentType
 
