@@ -27,7 +27,7 @@ def run(settings):
         if expectJSON:
             data = simplejson.loads(data)
             if options.verbose and not data.get('isOk'):
-                return data.get('message')
+                raise Exception('Could not open %s' % url)
         return data
     # Login
     showFeedback('Logging in...')
@@ -46,7 +46,7 @@ def run(settings):
     showFeedback('Logging out...')
     post('users/logout', expectJSON=False)
     # Return
-    return '\n'.join('%s: %s' % (key.capitalize(), count) for key, count in countByKey.iteritems())
+    return '\n'.join('%s: %s' % (key, count) for key, count in countByKey.iteritems())
 
 
 def strip(text):
@@ -181,15 +181,15 @@ def assemble(sqlalchemyURL):
         'technologies': technologies,
     }
     countByKey = {
-        'companies': len(companies),
-        'contacts': len(contacts),
-        'countries': len(countries),
-        'patents': len(patents),
-        'patentInventors': len(patentInventors),
-        'patentStatuses': len(patentStatuses),
-        'patentTypes': len(patentTypes),
-        'phones': len(phones),
-        'technologies': len(technologies),
+        'Companies': len(companies),
+        'Contacts': len(contacts),
+        'Countries': len(countries),
+        'Patents': len(patents),
+        'PatentInventors': len(patentInventors),
+        'PatentStatuses': len(patentStatuses),
+        'PatentTypes': len(patentTypes),
+        'Phones': len(phones),
+        'Technologies': len(technologies),
     }
     return payload, countByKey
 
