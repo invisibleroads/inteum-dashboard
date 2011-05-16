@@ -23,7 +23,7 @@ td {text-align: center}
 
 <%def name='js()'>
 function computeTableWidth() {
-	return $(window).width();
+	return $(window).width() - 55;
 }
 function computeTableHeight() {
 	return $(window).height() - 110;
