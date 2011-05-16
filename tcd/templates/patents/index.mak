@@ -9,6 +9,7 @@ td {text-align: center}
 #footer {position: fixed; bottom: 0; right: 0}
 tr {height: 2em}
 tr.even {background: #FBF5E6}
+table {border-collapse: collapse}
 </%def>
 
 <%def name='root()'>
