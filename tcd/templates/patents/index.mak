@@ -74,7 +74,7 @@ import whenIO
 	% for patent in patents:
 		<tr id=patent${patent.id} class=patent>
 			<td>${patent.technology.ref if patent.technology else ''}</td>
-			<td>${sorted(patent.inventors, key=lambda x: x.pi_order)[0].name_last if patent.inventors else ''}</td>
+			<td>${sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact.name_last if patent.inventors else ''}</td>
 			<td>${patent.name}</td>
 			<td>${patent.status.name if patent.status else ''}</td>
 			<td>${patent.type.name if patent.type else ''}</td>
@@ -85,9 +85,9 @@ import whenIO
 				<span title=''></span>
 			% endif
 			</td>
-			<td>${patent.firm.name}</td>
+			<td>${patent.firm.name if patent.firm else ''}</td>
 			<td>${patent.firm_ref}</td>
-			<td>${patent.country.name}</td>
+			<td>${patent.country.name if patent.country else ''}</td>
 		</tr>
 	% endfor
 	</tbody>
