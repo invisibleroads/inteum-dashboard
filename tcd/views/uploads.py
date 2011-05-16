@@ -2,7 +2,9 @@
 import datetime
 import simplejson
 from pyramid.view import view_config
+from beaker.cache import region_invalidate
 
+from tcd.views.patents import get_patents
 from tcd.libraries.tools import get_remote_ip
 from tcd.models import db, Company, Contact, Country, Patent, PatentInventor, PatentStatus, PatentType, Phone, Technology, Upload
 
@@ -107,4 +109,5 @@ def upload(request):
         ip=get_remote_ip(request),
         when=datetime.datetime.utcnow()))
     # Return
+    region_invalidate(get_patents, None)
     return dict(isOk=1)

@@ -7,6 +7,8 @@ td {text-align: center}
 .flag {color: darkblue}
 .left {text-align: left}
 #footer {position: fixed; bottom: 0; right: 0}
+tr {height: 2em}
+tr.even {background: #FBF5E6}
 </%def>
 
 <%def name='root()'>
@@ -24,11 +26,7 @@ function computeTableHeight() {
 	return $(window).height() - 110;
 }
 var table = $('#patents').dataTable({
-	'aaSorting': [
-		[2, 'asc'],
-		[3, 'asc'],
-		[4, 'asc']
-	],
+	'aaSorting': [],
 	'aoColumns': [
 		{'sType': 'html'},
         {'sType': 'html'},

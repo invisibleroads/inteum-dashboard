@@ -8,3 +8,4 @@ dist
 .*.ini
 .coverage
 data
+docs/_build

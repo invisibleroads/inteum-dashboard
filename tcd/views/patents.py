@@ -1,6 +1,7 @@
 'Views for tracking patent activity'
 from pyramid.view import view_config
 from sqlalchemy.orm import joinedload, joinedload_all
+from beaker.cache import cache_region
 
 from tcd.models import db, Upload, Contact, Patent, PatentInventor, PatentStatus, PatentType, Phone
 
@@ -14,7 +15,12 @@ def includeme(config):
 def index(request):
     'Display patent activity'
     upload = db.query(Upload).order_by(Upload.when.desc()).first()
-    patents = db.query(Patent).join(Patent.status, Patent.type).options(
+    return dict(upload=upload, patents=get_patents())
+
+
+@cache_region('long')
+def get_patents():
+    return db.query(Patent).join(Patent.status, Patent.type).options(
         joinedload(Patent.technology),
         joinedload(Patent.firm),
         joinedload(Patent.status),
@@ -26,4 +32,3 @@ def index(request):
         PatentType.name,
         Patent.date_filed,
     ).all()
-    return dict(upload=upload, patents=patents)
