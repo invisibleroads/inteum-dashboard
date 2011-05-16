@@ -14,15 +14,14 @@ def includeme(config):
 def index(request):
     'Display patent activity'
     upload = db.query(Upload).order_by(Upload.when.desc()).first()
-    patents = db.query(Patent).join(Patent.status, Patent.type).options(joinedload_all(
-        Patent.technology, 
-        Patent.firm, 
-        Patent.status, 
-        Patent.type, 
-        Patent.inventors, 
-        Patent.country,
-        PatentInventor.contact
-    )).order_by(
+    patents = db.query(Patent).join(Patent.status, Patent.type).options(
+        joinedload(Patent.technology),
+        joinedload(Patent.firm),
+        joinedload(Patent.status),
+        joinedload(Patent.type),
+        joinedload_all(Patent.inventors, PatentInventor.contact), 
+        joinedload(Patent.country),
+    ).order_by(
         PatentStatus.name,
         PatentType.name,
         Patent.date_filed,
