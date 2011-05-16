@@ -15,6 +15,7 @@ td {text-align: center}
 <link rel=stylesheet href="${request.static_url('tcd:static/dataTables/style.css')}">
 <style>
 .dataTables_filter {position: fixed; top: 0}
+.dataTables_info {position: fixed; bottom: 0; left: 0}
 </style>
 <script src="${request.static_url('tcd:static/dataTables/jquery.dataTables.min.js')}"></script>
 <script src="${request.static_url('tcd:static/dataTables/jquery.dataTables.titleString.min.js')}"></script>
@@ -22,10 +23,10 @@ td {text-align: center}
 
 <%def name='js()'>
 function computeTableWidth() {
-	return $(window).width();
+	return $(window).width() - 125;
 }
 function computeTableHeight() {
-	return $(window).height() - 100;
+	return $(window).height() - 125;
 }
 var table = $('#patents').dataTable({
 	'aaSorting': [
@@ -38,8 +39,8 @@ var table = $('#patents').dataTable({
         {'sType': 'string'},
         {'sType': 'string'},
         {'sType': 'string'},
-        {'sType': 'string'},
 		{'sType': 'title-string'},
+        {'sType': 'string'},
         {'sType': 'string'},
         {'sType': 'string'},
         {'sType': 'string'}
@@ -65,13 +66,13 @@ import whenIO
 		<tr>
 			<th>Case</th>
 			<th>Inventor</th>
-			<th>Name</th>
 			<th>Status</th>
             <th>Type</th>
 			<th>Filing Date</th>
 			<th>Firm</th>
 			<th>Firm Ref</th>
 			<th>Country</th>
+			<th>Name</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -79,7 +80,6 @@ import whenIO
 		<tr id=patent${patent.id} class=patent>
 			<td>${patent.technology.ref if patent.technology else ''}</td>
 			<td>${sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact.name_last if patent.inventors else ''}</td>
-			<td>${patent.name}</td>
 			<td>${patent.status.name if patent.status else ''}</td>
 			<td>${patent.type.name if patent.type else ''}</td>
 			<td>
@@ -92,6 +92,7 @@ import whenIO
 			<td>${patent.firm.name if patent.firm else ''}</td>
 			<td>${patent.firm_ref}</td>
 			<td>${patent.country.name if patent.country else ''}</td>
+			<td>${patent.name}</td>
 		</tr>
 	% endfor
 	</tbody>
