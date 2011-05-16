@@ -59,6 +59,13 @@ $('.dataTables_filter input').focus();
 import whenIO
 %>
 
+<%def name='format_contact(contact)'>
+Email: ${contact.email}<br>
+% for phone in contact.phones:
+	${phone.type}: ${phone.number}
+% endfor
+</%def>
+
 <table id=patents>
 	<thead>
 		<tr>
@@ -81,7 +88,7 @@ import whenIO
 			<%
 			contact = sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact
 			%>
-			<td title="${contact.email + ' '.join(contact.phones)}">${contact.name_last}</td>
+			<td title="${format_contact(contact)}">${contact.name_last}</td>
 		% else:
 			<td></td>
 		% endif
