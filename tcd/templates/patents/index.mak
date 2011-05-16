@@ -5,6 +5,7 @@
 <%def name='css()'>
 td {text-align: center}
 .flag {color: darkblue}
+.left {text-align: left}
 #footer {position: fixed; bottom: 0; right: 0}
 </%def>
 
@@ -66,9 +67,9 @@ import whenIO
             <th>Type</th>
 			<th>Filing Date</th>
 			<th>Firm</th>
-			<th>Firm Ref</th>
-			<th>Country</th>
-			<th>Name</th>
+			<th class=left>Firm Ref</th>
+			<th class=left>Country</th>
+			<th class=left>Name</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -80,15 +81,15 @@ import whenIO
 			<td>${patent.type.name if patent.type else ''}</td>
 			<td>
 			% if patent.date_filed:
-				<span title="${patent.date_filed.strftime('%Y%m%d')}">${patent.date_filed.strftime('%b %d, %Y')}</span>
+				<span title="${patent.date_filed.strftime('%Y%m%d')}">${patent.date_filed.strftime('%m/%d/%y')}</span>
 			% else:
 				<span title=''></span>
 			% endif
 			</td>
 			<td>${patent.firm.name if patent.firm else ''}</td>
-			<td>${patent.firm_ref}</td>
-			<td>${patent.country.name if patent.country else ''}</td>
-			<td>${patent.name}</td>
+			<td class=left>${patent.firm_ref}</td>
+			<td class=left>${patent.country.name if patent.country else ''}</td>
+			<td class=left>${patent.name}</td>
 		</tr>
 	% endfor
 	</tbody>
