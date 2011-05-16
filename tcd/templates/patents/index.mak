@@ -33,8 +33,8 @@ var table = $('#patents').dataTable({
 		[4, 'asc']
 	],
 	'aoColumns': [
-		{'sType': 'string'},
-        {'sType': 'string'},
+		{'sType': 'html'},
+        {'sType': 'html'},
         {'sType': 'string'},
         {'sType': 'string'},
 		{'sType': 'title-string'},
@@ -83,15 +83,17 @@ Email: ${contact.email}<br>
 	<tbody>
 	% for patent in patents:
 		<tr id=patent${patent.id} class=patent>
-			<td title="${patent.technology.name}">${patent.technology.ref if patent.technology else ''}</td>
-		% if patent.inventors:
-			<%
-			contact = sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact
-			%>
-			<td title="${format_contact(contact)}">${contact.name_last}</td>
-		% else:
-			<td></td>
-		% endif
+			<td>
+				<span title="${patent.technology.name}">${patent.technology.ref if patent.technology else ''}</span>
+			</td>
+			<td>
+			% if patent.inventors:
+				<%
+				contact = sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact
+				%>
+				<span title="${format_contact(contact)}">${contact.name_last}</span>
+			% endif
+			</td>
 			<td>${patent.status.name if patent.status else ''}</td>
 			<td>${patent.type.name if patent.type else ''}</td>
 			<td>
