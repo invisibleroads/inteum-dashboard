@@ -22,7 +22,7 @@ def run(settings):
     def post(relativeURL, valueByKey=None, expectJSON=True):
         url = appURL + '/' + relativeURL
         response = opener.open(url, urlencode(valueByKey or {}))
-        data = reponse.read()
+        data = response.read()
         response.close()
         if expectJSON:
             data = simplejson.loads(data)
@@ -41,7 +41,7 @@ def run(settings):
     payload, countByKey = assemble(sqlalchemyURL)
     # Upload
     showFeedback('Uploading...')
-    post('uploads', dict(token=token, payload=simplejson.dumps(payload)))
+    post('uploads', dict(token=token, payload=simplejson.dumps(payload, encoding='latin-1')))
     # Logout
     showFeedback('Logging out...')
     post('users/logout')

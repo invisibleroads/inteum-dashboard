@@ -23,7 +23,7 @@ def upload(request):
     if not payload:
         return dict(isOk=0, message='Missing payload')
     try:
-        payload = simplejson.loads(payload)
+        payload = simplejson.loads(payload, encoding='latin-1')
     except simplejson.JSONDecodeError:
         return dict(isOk=0, message='Could not load payload')
     try:
