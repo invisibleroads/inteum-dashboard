@@ -1,7 +1,7 @@
 'Command-line script to upload data'
 import simplejson
-from urllib2 import urlopen
 from urllib import urlencode
+from urllib2 import build_opener, HTTPCookieProcessor
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -18,9 +18,12 @@ def run(settings):
     appURL = settings['tc.url']
     appUsername = settings['tc.username']
     appPassword = settings['tc.password']
+    opener = build_opener(HTTPCookieProcessor())
     def post(relativeURL, valueByKey=None, expectJSON=True):
         url = appURL + '/' + relativeURL
-        data = urlopen(url, urlencode(valueByKey or {})).read()
+        response = opener.open(url, urlencode(valueByKey or {}))
+        data = reponse.read()
+        response.close()
         if expectJSON:
             data = simplejson.loads(data)
             if options.verbose and not data.get('isOk'):
