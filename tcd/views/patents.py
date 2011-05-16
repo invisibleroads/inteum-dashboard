@@ -1,8 +1,8 @@
 'Views for tracking patent activity'
 from pyramid.view import view_config
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload_all
 
-from tcd.models import db, Upload, Patent, PatentStatus, PatentType
+from tcd.models import db, Upload, Contact, Patent, PatentStatus, PatentType
 
 
 def includeme(config):
@@ -14,13 +14,14 @@ def includeme(config):
 def index(request):
     'Display patent activity'
     upload = db.query(Upload).order_by(Upload.when.desc()).first()
-    patents = db.query(Patent).join(Patent.status, Patent.type).options(joinedload(
+    patents = db.query(Patent).join(Patent.status, Patent.type).options(joinedload_all(
         Patent.technology, 
         Patent.firm, 
         Patent.status, 
         Patent.type, 
         Patent.inventors, 
         Patent.country,
+        Contact.name_last,
     )).order_by(
         PatentStatus.name,
         PatentType.name,
