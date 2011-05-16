@@ -6,7 +6,7 @@
 td {text-align: center}
 .flag {color: darkblue}
 .left {text-align: left}
-.tooltip {display: none}
+.tip_ {display: none}
 #footer {position: fixed; bottom: 0; right: 0}
 </%def>
 
@@ -25,6 +25,7 @@ td {text-align: center}
 </%def>
 
 <%def name='js()'>
+$('.tip').tooltip();
 function computeTableHeight() {
 	return $(window).height() - 110;
 }
@@ -79,8 +80,8 @@ import whenIO
 	% for patent in patents:
 		<tr id=patent${patent.id} class=patent>
 			<td>
-				<span>${patent.technology.ref if patent.technology else ''}</span>
-				<span class=tooltip>
+				<span class=tip>${patent.technology.ref if patent.technology else ''}</span>
+				<span class=tip_>
 					${patent.technology.name}
 				</span>
 			</td>
@@ -89,8 +90,8 @@ import whenIO
 				<%
 				contact = sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact
 				%>
-				<span>${contact.name_last}</span>
-				<span class=tooltip>
+				<span class=tip>${contact.name_last}</span>
+				<span class=tip_>
 					${contact.email}<br>
 					% for phone in contact.phones:
 						${phone.number} (${phone.type})
