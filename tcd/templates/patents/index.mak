@@ -47,10 +47,12 @@ var table = $('#patents').dataTable({
 	],
 	'bPaginate': false,
 	'oLanguage': {'sSearch': 'Filter'},
+	'sScrollX': computeTableWidth(),
 	'sScrollY': computeTableHeight()
 });
 $(window).bind('resize', function() {
-	$('.dataTables_scroll').height(computeTableHeight()).width(computeTableWidth());
+	$('.dataTables_scroll').width(computeTableWidth());
+	$('.dataTables_scrollBody').height(computeTableHeight());
 	table.fnAdjustColumnSizing();
 });
 $('.dataTables_filter input').focus();
