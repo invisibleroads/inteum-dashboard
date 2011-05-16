@@ -25,14 +25,20 @@ function computeTableHeight() {
 }
 var table = $('#patents').dataTable({
 	'aaSorting': [
-		[0, 'asc']
-		[1, 'asc']
-		[2, 'asc']
+		[3, 'asc']
+		[4, 'asc']
+		[5, 'asc']
 	],
 	'aoColumns': [
-		{'sType': 'html'},
-        {'sType': 'html'},
+		{'sType': 'string'},
+        {'sType': 'string'},
+        {'sType': 'string'},
+        {'sType': 'string'},
+        {'sType': 'string'},
 		{'sType': 'title-string'}
+        {'sType': 'string'},
+        {'sType': 'string'},
+        {'sType': 'string'},
 	],
 	'bInfo': false,
 	'bPaginate': false,
@@ -73,9 +79,11 @@ import whenIO
 			<td>${patent.status.name if patent.status else ''}</td>
 			<td>${patent.type.name if patent.type else ''}</td>
 			<td>
-				<span title="${patent.date_filed.strftime('%Y%m%d')}">
-					${patent.date_filed.strftime('%B %d, %Y')}
-				</span>
+			% if patent.date_filed:
+				<span title="${patent.date_filed.strftime('%Y%m%d')}">${patent.date_filed.strftime('%B %d, %Y')}</span>
+			% else:
+				<span title=''></span>
+			% endif
 			</td>
 			<td>${patent.firm.name}</td>
 			<td>${patent.firm_ref}</td>

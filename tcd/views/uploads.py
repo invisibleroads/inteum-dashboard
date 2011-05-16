@@ -4,7 +4,7 @@ import simplejson
 from pyramid.view import view_config
 
 from tcd.libraries.tools import get_remote_ip
-from tcd.models import db, Patent, PatentType, PatentStatus
+from tcd.models import db, Company, Contact, Country, Patent, PatentInventor, PatentStatus, PatentType, Phone, Technology, Upload
 
 
 def includeme(config):
@@ -84,7 +84,7 @@ def upload(request):
             id=int(patentStatusID),
             name=patentStatusName.strip(),
         ))
-    for patentTypeID, patentTypeName in patentTypeID:
+    for patentTypeID, patentTypeName in patentTypes:
         db.merge(PatentType(
             id=int(patentTypeID),
             name=patentTypeName.strip(),
