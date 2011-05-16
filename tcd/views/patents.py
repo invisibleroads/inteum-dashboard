@@ -2,7 +2,7 @@
 from pyramid.view import view_config
 from sqlalchemy.orm import joinedload, joinedload_all
 
-from tcd.models import db, Upload, Contact, Patent, PatentInventor, PatentStatus, PatentType
+from tcd.models import db, Upload, Contact, Patent, PatentInventor, PatentStatus, PatentType, Phone
 
 
 def includeme(config):
@@ -19,7 +19,7 @@ def index(request):
         joinedload(Patent.firm),
         joinedload(Patent.status),
         joinedload(Patent.type),
-        joinedload_all(Patent.inventors, PatentInventor.contact), 
+        joinedload_all(Patent.inventors, PatentInventor.contact, Contact.phones),
         joinedload(Patent.country),
     ).order_by(
         PatentStatus.name,
