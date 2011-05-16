@@ -43,8 +43,8 @@ def run(settings):
     showFeedback('Uploading...')
     post('uploads', dict(token=token, payload=simplejson.dumps(payload, encoding='latin-1')))
     # Logout
-    showFeedback('Logging out...', expectJSON=False)
-    post('users/logout')
+    showFeedback('Logging out...')
+    post('users/logout', expectJSON=False)
     # Return
     return '\n'.join('%s: %s' % (key.capitalize(), count) for key, count in countByKey.iteritems())
 
