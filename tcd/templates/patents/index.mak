@@ -40,7 +40,6 @@ var table = $('#patents').dataTable({
         {'sType': 'string'},
         {'sType': 'string'}
 	],
-	'bInfo': false,
 	'bPaginate': false,
 	'oLanguage': {'sSearch': 'Filter'},
 	'sScrollY': computeTableHeight()
@@ -80,7 +79,7 @@ import whenIO
 			<td>${patent.type.name if patent.type else ''}</td>
 			<td>
 			% if patent.date_filed:
-				<span title="${patent.date_filed.strftime('%Y%m%d')}">${patent.date_filed.strftime('%B %d, %Y')}</span>
+				<span title="${patent.date_filed.strftime('%Y%m%d')}">${patent.date_filed.strftime('%b %d, %Y')}</span>
 			% else:
 				<span title=''></span>
 			% endif
