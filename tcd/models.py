@@ -159,6 +159,7 @@ class Contact(Base):
     name_middle = Column(Unicode(1))
     name_last = Column(Unicode(25))
     email = Column(Unicode(250))
+    phones = relationship('Phone')
 
     def __str__(self):
         return "<Contact(id=%s)>" % self.id

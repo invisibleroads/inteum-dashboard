@@ -9,9 +9,6 @@ td {text-align: center}
 #footer {position: fixed; bottom: 0; right: 0}
 </%def>
 
-<%def name='toolbar()'>
-</%def>
-
 <%def name='root()'>
 <link rel=stylesheet href="${request.static_url('tcd:static/dataTables/style.css')}">
 <style>
@@ -33,8 +30,8 @@ var table = $('#patents').dataTable({
 		[4, 'asc']
 	],
 	'aoColumns': [
-		{'sType': 'string'},
-        {'sType': 'string'},
+		{'sType': 'html'},
+        {'sType': 'html'},
         {'sType': 'string'},
         {'sType': 'string'},
 		{'sType': 'title-string'},
@@ -76,15 +73,17 @@ import whenIO
 	<tbody>
 	% for patent in patents:
 		<tr id=patent${patent.id} class=patent>
-			<td title="${patent.technology.name}">${patent.technology.ref if patent.technology else ''}</td>
-		% if patent.inventors:
-			<%
-			contact = sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact
-			%>
-			<td title="${contact.email + ' '.join(contact.phones)}">${contact.name_last}</td>
-		% else:
-			<td></td>
-		% endif
+			<td>
+				<span title='${patent.technology.name}'>${patent.technology.ref if patent.technology else ''}</span>
+			</td>
+			<td>
+			% if patent.inventors:
+				<%
+				contact = sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact
+				%>
+				<span title='${'%s\n%s' % (contact.email, '\n'.join('%s %s' % (phone.number, phone.type) for phone in contact.phones))}'>${contact.name_last}</span>
+			% endif
+			</td>
 			<td>${patent.status.name if patent.status else ''}</td>
 			<td>${patent.type.name if patent.type else ''}</td>
 			<td>
