@@ -6,6 +6,7 @@
 td {text-align: center}
 .flag {color: darkblue}
 .left {text-align: left}
+.tooltip {display: none}
 #footer {position: fixed; bottom: 0; right: 0}
 </%def>
 
@@ -18,6 +19,7 @@ td {text-align: center}
 .dataTables_filter {position: fixed; top: 0}
 .dataTables_info {position: fixed; bottom: 0; left: 0}
 </style>
+<script src="${request.static_url('tcd:static/jquery.tools.min.js')}"></script>
 <script src="${request.static_url('tcd:static/dataTables/jquery.dataTables.min.js')}"></script>
 <script src="${request.static_url('tcd:static/dataTables/jquery.dataTables.titleString.min.js')}"></script>
 </%def>
@@ -59,13 +61,6 @@ $('.dataTables_filter input').focus();
 import whenIO
 %>
 
-<%def name='format_contact(contact)'>
-Email: ${contact.email}<br>
-% for phone in contact.phones:
-	${phone.type}: ${phone.number}
-% endfor
-</%def>
-
 <table id=patents>
 	<thead>
 		<tr>
@@ -84,14 +79,23 @@ Email: ${contact.email}<br>
 	% for patent in patents:
 		<tr id=patent${patent.id} class=patent>
 			<td>
-				<span title="${patent.technology.name}">${patent.technology.ref if patent.technology else ''}</span>
+				<span>${patent.technology.ref if patent.technology else ''}</span>
+				<span class=tooltip>
+					${patent.technology.name}
+				</span>
 			</td>
 			<td>
 			% if patent.inventors:
 				<%
 				contact = sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact
 				%>
-				<span title="${format_contact(contact)}">${contact.name_last}</span>
+				<span>${contact.name_last}</span>
+				<span class=tooltip>
+					${contact.email}<br>
+					% for phone in contact.phones:
+						${phone.number} (${phone.type})
+					% endfor
+				</span>
 			% endif
 			</td>
 			<td>${patent.status.name if patent.status else ''}</td>
