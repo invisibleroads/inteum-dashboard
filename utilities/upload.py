@@ -54,7 +54,7 @@ def strip(text):
 
 
 def showFeedback(text):
-    if 'options' not in dir() or options.verbose:
+    if 'options' not in globals() or options.verbose:
         print text
 
 
