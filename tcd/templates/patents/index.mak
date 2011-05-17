@@ -3,13 +3,13 @@
 <%def name='title()'>Patents</%def>
 
 <%def name='css()'>
+table {border-collapse: collapse}
+tr {height: 2em}
+tr.even {background: #FBF5E6}
 td {text-align: center}
 .flag {color: darkblue}
 .left {text-align: left}
 #footer {position: fixed; bottom: 0; right: 0}
-tr {height: 2em}
-tr.even {background: #FBF5E6}
-table {border-collapse: collapse}
 </%def>
 
 <%def name='root()'>
@@ -48,7 +48,13 @@ $(window).bind('resize', function() {
 	$('.dataTables_scrollBody').height(computeTableHeight());
 	table.fnAdjustColumnSizing();
 });
-$('.dataTables_filter input').focus();
+$('.dataTables_filter').append('&nbsp; <input id=download type=button value=Download>');
+$('#download').click(function() {
+	var ids = [];
+	$('tr.patent').each(function() {ids.push(getID(this))})
+	window.location = "${request.route_path('patent_download')}?ids=" + ids.join(' ');
+});
+$('.dataTables_filter input:eq(0)').focus();
 </%def>
 
 <%!

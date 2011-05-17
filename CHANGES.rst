@@ -1,4 +1,5 @@
-0.0
+0.1
 ---
 
-- Started project
+- Added remote upload script
+- Implemented patent activity view

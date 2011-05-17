@@ -39,7 +39,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 setup(
     name='tcd',
-    version='0.0',
+    version='0.1',
     description='tcd',
     long_description=README + '\n\n' +  CHANGES,
     classifiers=[
