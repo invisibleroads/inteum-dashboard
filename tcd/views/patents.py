@@ -1,5 +1,7 @@
 'Views for tracking patent activity'
+import re
 import csv
+import datetime
 from pyramid.view import view_config
 from pyramid.response import Response
 from sqlalchemy.orm import joinedload, joinedload_all
@@ -26,18 +28,53 @@ def index(request):
 @view_config(route_name='patent_download', permission='active')
 def download(request):
     'Return a spreadsheet of selected patents'
+    # Load desired patents
     params = request.params
-    patentIDs = params.get('ids', [])
-    patents = get_patents()
+    phrase = params.get('phrase', '')
+    patentIDs = params.get('ids', '').split()
+    patentByID = dict((str(x.id), x) for x in get_patents())
+    # Prepare CSV
     stringIO = StringIO()
-
-
+    csvWriter = csv.writer(stringIO)
+    csvWriter.writerow([
+        'Case',
+        'Lead Inventor',
+        'Status',
+        'Type',
+        'Date Filed',
+        'Firm',
+        'Firm Ref',
+        'Country',
+        'Title',
+    ])
+    for patentID in patentIDs:
+        try:
+            patent = patentByID[patentID]
+        except KeyError:
+            continue
+        contact = patent.lead_contact
+        contactSummary = '%s\n%s\n%s' % (contact.name_last, contact.email, '\n'.join('%s %s' % (phone.number, phone.type) for phone in contact.phones)) if contact else ''
+        csvWriter.writerow([
+            patent.technology.ref if patent.technology else '',
+            contactSummary,
+            patent.status.name if patent.status else '',
+            patent.type.name if patent.type else '',
+            patent.date_filed.strftime('%m/%d/%y') if patent.date_filed else '',
+            patent.firm.name if patent.firm else '',
+            patent.firm_ref,
+            patent.country.name if patent.country else '',
+            patent.name,
+        ])
+    # Sanitize filename
+    alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.() '
+    phrase = re.sub(r'[^%s]' % alphabet, ' ', phrase) # Whitelist characters
+    phrase = re.sub(r'\s+', ' ', phrase).strip() # Remove excess whitespace
+    filename = '%s patents%s.csv' % (datetime.datetime.utcnow().strftime('%Y%m%d'), ' ' + phrase if phrase else '')
+    # Generate
     stringIO.reset()
     body = stringIO.read()
-    return Response(
-        body=body,
-        content_length=len(body),
-        content_disposition='attachment; filename="patents.csv"')
+    # Return
+    return Response(body=body, content_length=len(body), content_disposition='attachment; filename="%s"' % filename)
 
 
 @cache_region('long')

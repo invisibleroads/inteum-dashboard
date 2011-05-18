@@ -48,13 +48,17 @@ $(window).bind('resize', function() {
 	$('.dataTables_scrollBody').height(computeTableHeight());
 	table.fnAdjustColumnSizing();
 });
-$('.dataTables_filter').append('&nbsp; <input id=download type=button value=Download>');
+var filterDiv = $('.dataTables_filter');
+var filterInput = filterDiv.find('input:eq(0)');
+filterDiv.append('&nbsp; <input id=download type=button value=Download>');
 $('#download').click(function() {
 	var ids = [];
-	$('tr.patent').each(function() {ids.push(getID(this))})
-	window.location = "${request.route_path('patent_download')}?ids=" + ids.join(' ');
+	$('tr.patent').each(function() {
+		ids.push(getID(this));
+	})
+	window.location = "${request.route_path('patent_download')}?ids=" + ids.join(' ') + '&phrase=' + filterInput.val();
 });
-$('.dataTables_filter input:eq(0)').focus();
+filterInput.focus();
 </%def>
 
 <%!
@@ -82,9 +86,9 @@ import whenIO
 				<span title='${patent.technology.name}'>${patent.technology.ref if patent.technology else ''}</span>
 			</td>
 			<td>
-			% if patent.inventors:
+			% if patent.lead_contact:
 				<%
-				contact = sorted(patent.inventors, key=lambda x: x.pi_order)[0].contact
+				contact = patent.lead_contact
 				%>
 				<span title='${'%s\n%s' % (contact.email, '\n'.join('%s %s' % (phone.number, phone.type) for phone in contact.phones))}'>${contact.name_last}</span>
 			% endif

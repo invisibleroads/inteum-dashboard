@@ -194,6 +194,11 @@ class Patent(Base):
     def __str__(self):
         return "<Patent(id=%s)>" % self.id
 
+    @property
+    def lead_contact(self):
+        if self.inventors:
+            return sorted(self.inventors, key=lambda x: x.pi_order)[0].contact
+
 
 class PatentInventor(Base):
     'A patent inventor'
