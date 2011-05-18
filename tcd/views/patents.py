@@ -66,7 +66,7 @@ def download(request):
             patent.name,
         ])
     # Sanitize filename
-    alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.() '
+    alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.,() '
     phrase = re.sub(r'[^%s]' % alphabet, ' ', phrase) # Whitelist characters
     phrase = re.sub(r'\s+', ' ', phrase).strip() # Remove excess whitespace
     filename = '%s patents%s.csv' % (datetime.datetime.utcnow().strftime('%Y%m%d'), ' ' + phrase if phrase else '')

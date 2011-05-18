@@ -52,11 +52,18 @@ var filterDiv = $('.dataTables_filter');
 var filterInput = filterDiv.find('input:eq(0)');
 filterDiv.append('&nbsp; <input id=download type=button value=Download>');
 $('#download').click(function() {
+	var sortBys = []
+	if ($('.sorting_asc').length) {
+		sortBys.push($('.sorting_asc').text());
+	} else if ($('.sorting_desc').length) {
+		sortBys.push($('.sorting_desc').text());
+	}
+	var phrase = filterInput.val() + ((sortBys.length) ? ' (sorted by ' + sortBys.join(', ').toLowerCase() + ')' : '');
 	var ids = [];
 	$('tr.patent').each(function() {
 		ids.push(getID(this));
 	})
-	window.location = "${request.route_path('patent_download')}?ids=" + ids.join(' ') + '&phrase=' + filterInput.val();
+	window.location = "${request.route_path('patent_download')}?ids=" + ids.join(' ') + '&phrase=' + phrase;
 });
 filterInput.focus();
 </%def>
@@ -76,7 +83,7 @@ import whenIO
 			<th>Firm</th>
 			<th class=left>Firm Ref</th>
 			<th class=left>Country</th>
-			<th class=left>Name</th>
+			<th class=left>Title</th>
 		</tr>
 	</thead>
 	<tbody>
