@@ -9,15 +9,13 @@ tr.even {background: #FBF5E6}
 td {text-align: center}
 .flag {color: darkblue}
 .left {text-align: left}
+.dataTables_filter {position: fixed; top: 0}
+.dataTables_info {position: fixed; bottom: 0; left: 0}
 #footer {position: fixed; bottom: 0; right: 0}
 </%def>
 
 <%def name='root()'>
 <link rel=stylesheet href="${request.static_url('tcd:static/dataTables/style.css')}">
-<style>
-.dataTables_filter {position: fixed; top: 0}
-.dataTables_info {position: fixed; bottom: 0; left: 0}
-</style>
 <script src="${request.static_url('tcd:static/dataTables/jquery.dataTables.min.js')}"></script>
 <script src="${request.static_url('tcd:static/dataTables/jquery.dataTables.titleString.min.js')}"></script>
 </%def>
