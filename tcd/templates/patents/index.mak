@@ -46,24 +46,27 @@ $(window).bind('resize', function() {
 	$('.dataTables_scrollBody').height(computeTableHeight());
 	table.fnAdjustColumnSizing();
 });
-var filterDiv = $('.dataTables_filter');
-var filterInput = filterDiv.find('input:eq(0)');
-filterDiv.append('&nbsp; <input id=download type=button value=Download>');
-$('#download').click(function() {
-	var sortBys = []
-	if ($('.sorting_asc').length) {
-		sortBys.push($('.sorting_asc').text());
-	} else if ($('.sorting_desc').length) {
-		sortBys.push($('.sorting_desc').text());
+$('.dataTables_filter')
+.append('&nbsp; ')
+.append($('<input>', {
+	id: 'download',
+	type: 'button',
+	value: 'Download',
+	click: function() {
+		var sortBys = $.map($('.sorting_asc, .sorting_desc'), function(n, i) {
+			return $(n).text();
+		});
+		var patentIDs = $.map($('tr.patent'), function(n, i) {
+			return getID(this);
+		});
+		var phrase = $('.dataTables_filter input:eq(0)').val();
+		if (sortBys.length) {
+			phrase += ' (sorted by ' + sortBys.join(', ').toLowerCase() + ')';
+		}
+		window.location = "${request.route_path('patent_download')}?ids=" + patentIDs.join(' ') + '&phrase=' + phrase;
 	}
-	var phrase = filterInput.val() + ((sortBys.length) ? ' (sorted by ' + sortBys.join(', ').toLowerCase() + ')' : '');
-	var ids = [];
-	$('tr.patent').each(function() {
-		ids.push(getID(this));
-	})
-	window.location = "${request.route_path('patent_download')}?ids=" + ids.join(' ') + '&phrase=' + phrase;
-});
-filterInput.focus();
+}))
+.find('input:eq(0)').focus();
 </%def>
 
 <%!
