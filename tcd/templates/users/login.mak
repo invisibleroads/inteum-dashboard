@@ -139,7 +139,7 @@ $('#username').focus();
 		<td id=m_password></td>
 	</tr>
 	<tr>
-		<td><label for=minutes_offset>Time</label</td>
+		<td><label for=minutes_offset>Time</label></td>
 		<td>
 			<select id=minutes_offset>
 				<%include file='offsets.mak'/>
